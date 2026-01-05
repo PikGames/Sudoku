@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Grid from "./components/Grid";
 import Controls from "./components/Controls";
@@ -53,6 +53,17 @@ function App() {
   const handleNamePuzzle = () => {
     setGreenCount(0)
   };
+
+  const [theme, setTheme] = useState(localStorage.getItem("sudoku-theme") || "light");
+
+  useEffect(() => {
+    localStorage.setItem("sudoku-theme", theme);
+    document.body.className = theme;
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
   const handleInput = (rowIndex, cellIndex, value) => {
     if (value === "" || (value >= 1 && value <= 9)) {
       setBoard((prev) =>
@@ -85,6 +96,8 @@ function App() {
           handleCheck={handleCheck}
           handleReset={handleReset}
           handleNamePuzzle={handleNamePuzzle}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
         {status && <h2 className="status">{status}</h2>}
       </div>
