@@ -1,0 +1,72 @@
+:root {
+  --gray: #333;
+}
+
+.container{
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: #ffffff;
+}
+.table{
+  border-collapse: collapse;
+}
+.cell {
+  border: 1px solid #999;
+  padding: 0;
+}
+
+.cell:nth-child(3),
+.cell:nth-child(6),
+.cell:nth-child(9) {
+  border-right: 3px solid var(--gray);
+}
+.cell:nth-child(1){
+  border-left: 3px solid var(--gray);
+}
+
+.table tr:nth-child(3) .cell,
+.table tr:nth-child(6) .cell,
+.table tr:nth-child(9) .cell {
+  border-bottom: 3px solid var(--gray);
+}
+
+.table tr:nth-child(1) .cell{
+  border-top: 3px solid var(--gray);
+}
+
+input {
+  width: 2rem;
+  height: 2rem;
+  text-align: center;
+  font-size: 1.5rem;
+  border: none;
+  outline: none;
+  background: inherit;
+  color: black;
+  cursor: default;
+}
+
+input:focus {
+  caret-color: transparent;
+  background-color: #78b1eb;
+}
+
+.same-row, .same-col, .same-box {
+  background: #e6f0ff;
+}
+
+.status{
+  font-weight: bold;
+  position: absolute;
+  top: 1rem;
+  background-color: #000000;
+  padding: 10px 25px;
+  border-radius: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.green {
+  background-color: #a6f1a6;
+  transition: background-color 0.3s ease;
+}
