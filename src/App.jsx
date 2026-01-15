@@ -336,9 +336,9 @@ function App() {
           <div className="info-item right">
             <div className="timer-container">
               <div className="timer">{formatTime(timer)}</div>
-              <button className="btn-pause" onClick={handlePause} title="Pause Game">
+              <div className="btn-pause" onClick={handlePause} title="Pause Game">
                 ⏸
-              </button>
+              </div>
             </div>
             <div className="best-time">Best: {bestTimes[difficulty] ? formatTime(bestTimes[difficulty]) : '--:--'}</div>
           </div>
