@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Moon, Sun } from 'lucide-react'
+import { Lightbulb, Eraser, RotateCcw, Puzzle } from 'lucide-react'
 import React, { useRef } from 'react'
 
 const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
@@ -60,11 +60,46 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
   );
 };
 
-export default function Controls({ handleCheck, handleReset, handleNewPuzzle, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, handleErase, handleHint, hintUsed, }) {
+export default function Controls({ handleReset, handleNewPuzzle, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, handleErase, handleHint, hintsUsed, difficulty }) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
     <div className="controls">
+      <div className="action-buttons">
+        <button className="btn-icon-control" onClick={handleErase}>
+          <div className="icon-wrapper">
+            <Eraser size={28} />
+          </div>
+          <span className="label">Erase</span>
+        </button>
+        <button
+          className="btn-icon-control"
+          onClick={handleHint}
+          disabled={hintsUsed >= ((difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3))}
+        >
+          <div className="icon-wrapper">
+            <Lightbulb size={28} />
+            {hintsUsed < ((difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3)) && (
+              <div className="badge">
+                {((difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3)) - hintsUsed}
+              </div>
+            )}
+          </div>
+          <span className="label">Hint</span>
+        </button>
+        <button className="btn-icon-control" onClick={handleReset}>
+          <div className="icon-wrapper">
+            <RotateCcw size={28} />
+          </div>
+          <span className="label">Reset</span>
+        </button>
+        <button className="btn-icon-control" onClick={handleNewPuzzle}>
+          <div className="icon-wrapper">
+            <Puzzle size={28} />
+          </div>
+          <span className="label">New Puzzle</span>
+        </button>
+      </div>
       <div className='numbers-section'>
         <div className='numbers-pad'>
           {numbers.map((num, index) => (
@@ -79,19 +114,6 @@ export default function Controls({ handleCheck, handleReset, handleNewPuzzle, ha
             )
           ))}
         </div>
-      </div>
-      <div style={{ marginTop: 16 }}>
-        <button onClick={handleErase} style={{ marginRight: 8 }}>Erase</button>
-        <button onClick={handleCheck} style={{ marginRight: 8 }}>Check</button>
-        <button onClick={handleReset} style={{ marginRight: 8 }}>Reset</button>
-        <button onClick={handleNewPuzzle} style={{ marginRight: 8 }}>New Puzzle</button>
-        <button
-          className="btn-hint"
-          onClick={handleHint}
-          disabled={hintUsed}
-        >
-          {hintUsed ? "Hint Used" : "Get Hint"}
-        </button>
       </div>
     </div>
   )

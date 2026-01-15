@@ -30,7 +30,7 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem("sudoku-theme") || "light");
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [difficulty, setDifficulty] = useState("easy");
-  const [hintUsed, setHintUsed] = useState(false);
+  const [hintsUsed, setHintsUsed] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [timer, setTimer] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -45,6 +45,10 @@ function App() {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const getHintLimit = (diff) => {
+    return (diff === 'easy' || diff === 'medium') ? 5 : (diff === 'devilMode' ? 1 : 3);
   };
 
   //to save the theme
@@ -62,40 +66,14 @@ function App() {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
   };
 
-  const handleCheck = () => {
-    const sudokuBoard = board.flat();
-    const sudokuSolution = solution.flat();
 
-    if (sudokuBoard.every((cell, i) => cell === sudokuSolution[i])) {
-      setStatus('Solved');
-      setIsTimerRunning(false);
-
-      // Check Best Time
-      const currentBest = bestTimes[difficulty];
-      if (currentBest === undefined || timer < currentBest) {
-        const newBestTimes = { ...bestTimes, [difficulty]: timer };
-        setBestTimes(newBestTimes);
-        localStorage.setItem("sudoku-best-times", JSON.stringify(newBestTimes));
-      }
-
-      let count = 0;
-      const totalCells = 81;
-      const interval = setInterval(() => {
-        count++;
-        setGreenCount(count);
-        if (count === totalCells) clearInterval(interval);
-      }, 30)
-    } else {
-      setStatus('Incorrect')
-      setGreenCount(0)
-    }
-  };
   const handleReset = () => {
     setBoard(puzzle.map((row) => [...row]));
     setStatus("");
     setSelected(null);
     setGreenCount(0);
     setMistakes(0);
+    setHintsUsed(0);
     setTimer(0);
     setIsTimerRunning(true);
     setIsPaused(false);
@@ -247,7 +225,7 @@ function App() {
     setSelected(null);
     setGreenCount(0);
     setSelectedNumber(null);
-    setHintUsed(false);
+    setHintsUsed(0);
     setMistakes(0);
     setTimer(0);
     setIsTimerRunning(true);
@@ -261,7 +239,8 @@ function App() {
   };
 
   const handleHint = () => {
-    if (hintUsed) return;
+    const hintLimit = getHintLimit(difficulty);
+    if (hintsUsed >= hintLimit) return;
 
     // Find all empty or incorrect cells
     const emptyCells = [];
@@ -286,7 +265,7 @@ function App() {
       row.map((cell, c) => (r === rowIndex && c === cellIndex ? correctValue : cell))
     ));
 
-    setHintUsed(true);
+    setHintsUsed(prev => prev + 1);
   };
 
   const handleCellClick = (rowIndex, cellIndex) => {
@@ -395,7 +374,6 @@ function App() {
           handleCellClick={handleCellClick}
         />
         <Controls
-          handleCheck={handleCheck}
           handleReset={handleReset}
           handleNewPuzzle={handleNewPuzzle}
           handleNumberClick={handleNumberClick}
@@ -403,7 +381,8 @@ function App() {
           finishedNumbers={finishedNumbers}
           handleNumberLongPress={handleNumberLongPress}
           handleHint={handleHint}
-          hintUsed={hintUsed}
+          hintsUsed={hintsUsed}
+          difficulty={difficulty}
           handleErase={handleErase}
         />
         {status && <h2 className="status">{status}</h2>}

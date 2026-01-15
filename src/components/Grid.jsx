@@ -13,7 +13,6 @@ function Grid({
   handleCellClick,
 }) {
   return (
-    <div className="container">
       <table className="table">
         <tbody>
           {board.map((row, rowIndex) => {
@@ -88,7 +87,6 @@ function Grid({
           })}
         </tbody>
       </table>
-    </div>
   );
 }
 

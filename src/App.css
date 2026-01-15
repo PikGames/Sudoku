@@ -1,28 +1,30 @@
 :root {
-  --primary: #ffc164;
+  --primary: rgb(221, 111, 22);
   --bg-color: #ffffff;
   --text-color: #333333;
   --bg-cell: #ffffff;
-  --bg-prefilled: #f0f0f0;
-  --bg-highlight: #e6f0ff;
   --border-color: #ccc;
-  --pad-bg: #f8f9fa;
   --btn-reset-bg: #eee;
   --btn-reset-text: #333;
+
+  --bg-highlight: rgb(248, 178, 89);
+  --area-highlight: rgba(243, 217, 184, 0.705);
+  --same-value: rgb(243, 217, 184);
 }
 
 body.dark {
-  --gray: #ccc;
-  --primary: #ffda74;
+  --primary: rgb(221, 111, 22);
   --bg-color: #1a1a1a;
   --text-color: #f0f0f0;
   --bg-cell: #2a2a2a;
-  --bg-prefilled: #333333;
-  --bg-highlight: #3a4a5a;
   --border-color: #444;
-  --pad-bg: #2a2a2a;
   --btn-reset-bg: #333;
   --btn-reset-text: #eee;
+
+
+  --bg-highlight: rgb(248, 178, 89);
+  --area-highlight: rgba(245, 206, 155, 0.692);
+  --same-value: rgb(245, 206, 155);
 }
 
 body {
@@ -80,8 +82,7 @@ input {
   border: none;
   outline: none;
   background: transparent;
-  color: #007bff;
-  /* Blue color for user-entered numbers */
+  color: var(--primary);
   cursor: pointer;
   font-weight: 500;
 }
@@ -98,15 +99,9 @@ input:focus {
   outline: none;
 }
 
-.same-row,
-.same-col,
-.same-box {
-  background: #f7e3a3af;
-}
-
 /* Added Highlight Classes */
 .selected-cell {
-  background-color: rgb(187, 222, 251) !important;
+  background-color: var(--bg-highlight);
 }
 
 /* Ensure the input doesn't hide the cell background when selected */
@@ -115,15 +110,15 @@ input:focus {
 }
 
 .area-highlight {
-  background-color: #e2e8f0;
+  background-color: var(--area-highlight);
 }
 
 .same-value {
-  background-color: rgb(195, 221, 253);
+  background-color: var(--same-value);
 }
 
 .blue-highlight {
-  background-color: rgb(144, 202, 249) !important;
+  background-color: rgb(202, 115, 0) !important;
 }
 
 .conflict {
@@ -145,29 +140,13 @@ input:focus {
 
 /* Dark Mode Overrides for Highlights */
 body.dark input {
-  color: #60a5fa;
+  color: var(--primary);
   /* Lighter blue for user-entered numbers in dark mode */
 }
 
 body.dark input:read-only {
   color: var(--text-color);
   /* Keep prefilled numbers default text color */
-}
-
-body.dark .selected-cell {
-  background-color: #3b82f6 !important;
-}
-
-body.dark .area-highlight {
-  background-color: #334155;
-}
-
-body.dark .same-value {
-  background-color: #1e40af;
-}
-
-body.dark .blue-highlight {
-  background-color: #2563eb !important;
 }
 
 body.dark .conflict,
@@ -194,13 +173,10 @@ body.dark .prefilled-conflict {
   transition: background-color 0.3s ease;
 }
 
-.btn-theme {
-  border-radius: 10px;
-  background-color: #1a1a1a;
-}
+
 
 .controls {
-  margin-top: 4rem;
+  margin-top: 0rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -221,55 +197,35 @@ body.dark .prefilled-conflict {
 }
 
 .number-btn {
-  width: 3.5rem;
-  height: 3.5rem;
   font-size: 1.5rem;
   font-weight: bold;
-  border: 2px solid var(--border-color);
-  background: var(--bg-cell);
-  border-radius: 8px;
+  background: none;
+  border: none;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: var(--text-color);
+  color: var(--primary);
+  opacity: 0.5;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0.5rem;
+  min-width: 2.5rem;
 }
 
 .number-btn:hover {
-  background: #fffbf0;
-  border-color: #f3aa21;
-  color: black;
+  color: var(--primary);
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 .number-btn.active {
-  background: #f3aa21;
-  color: white;
-  border-color: #d28219;
-  box-shadow: 0 0 10px rgba(243, 177, 33, 0.5);
+  color: var(--primary);
+  opacity: 1;
+  transform: scale(1.2);
 }
 
-.difficulty-selector {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-}
-
-.difficulty-selector select {
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-cell);
-  color: var(--text-color);
-  font-family: inherit;
-  font-size: 1rem;
-  cursor: pointer;
+.number-btn:focus {
   outline: none;
-}
-
-.difficulty-selector select:focus {
-  border-color: var(--primary);
 }
 
 /* Update: game-header is no longer used for columns, replaced by game-info-bar */
@@ -297,11 +253,11 @@ body.dark .prefilled-conflict {
 .info-item.center {
   text-align: center;
   font-weight: 600;
-  color: #ef4444;
+  color: var(--primary);
 }
 
 body.dark .info-item.center {
-  color: #f87171;
+  color: var(--primary);
 }
 
 .info-item.right {
@@ -337,7 +293,7 @@ h1 {
 .btn-pause {
   background: #d5d2d2;
   border: none;
-  color: var(--text-color);
+  color: var(--primary);
   font-size: 1.2rem;
   cursor: pointer;
   padding: 0;
@@ -541,4 +497,357 @@ body.dark .modal-overlay {
 /* Dark Mode tweaks for settings */
 body.dark .settings-popup {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Custom Hint Button */
+/* Action Buttons Container */
+.action-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Base style for icon controls (Hint, Erase) */
+.btn-icon-control {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  color: var(--text-color);
+  transition: opacity 0.2s;
+  min-width: 70px;
+}
+
+.btn-icon-control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.icon-wrapper svg {
+  stroke: var(--text-color);
+  opacity: 0.7;
+}
+
+.btn-icon-control:hover .icon-wrapper svg {
+  opacity: 1;
+  stroke: var(--primary);
+}
+
+.btn-icon-control:hover .label {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.8;
+  transition: color 0.2s;
+}
+
+/* Badge for Hint */
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background-color: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bg-color);
+}
+
+/* Standard text buttons (Reset, New Puzzle) */
+.btn-text {
+  background: var(--btn-reset-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  color: var(--btn-reset-text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 40px;
+  /* Align height roughly with icon buttons */
+}
+
+.btn-text:hover {
+  filter: brightness(0.95);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+body.dark .badge {
+  border-color: var(--bg-cell);
+}
+
+/* Responsive Design - Mobile First */
+
+/* Small phones (max 375px) */
+@media (max-width: 375px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    padding: 0.3rem;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .table {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  input {
+    width: 2.2rem;
+    height: 2.2rem;
+    font-size: 1.2rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-info-bar {
+    font-size: 0.8rem;
+    gap: 0.3rem;
+    margin: 0.3rem auto 1rem auto;
+    padding: 0 0.5rem;
+  }
+
+  .info-item.left {
+    font-size: 0.75rem;
+  }
+
+  .info-item.center {
+    font-size: 0.85rem;
+  }
+
+  .timer {
+    font-size: 0.95rem;
+  }
+
+  .best-time {
+    font-size: 0.7rem;
+  }
+
+  .btn-pause {
+    width: 22px;
+    height: 22px;
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    gap: 0.8rem;
+    margin-top: 0.8rem;
+  }
+
+  .btn-icon-control {
+    min-width: 65px;
+    padding: 8px;
+  }
+
+  .icon-wrapper svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .label {
+    font-size: 0.8rem;
+  }
+
+  .badge {
+    width: 18px;
+    height: 18px;
+    font-size: 0.7rem;
+  }
+
+  .numbers-pad {
+    gap: 0.4rem;
+    padding: 0.8rem 0.5rem;
+  }
+
+  .number-btn {
+    font-size: 1.3rem;
+    padding: 0.4rem;
+    min-width: 2.2rem;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .settings-popup {
+    width: 180px;
+    font-size: 0.85rem;
+  }
+
+  .btn-settings {
+    padding: 3px;
+  }
+
+  .btn-settings svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Medium phones (376px - 480px) */
+@media (min-width: 376px) and (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+
+  .table {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  input {
+    width: 2.8rem;
+    height: 2.8rem;
+    font-size: 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .game-info-bar {
+    font-size: 0.85rem;
+  }
+
+  .action-buttons {
+    gap: 1.5rem;
+  }
+
+  .btn-icon-control {
+    min-width: 65px;
+  }
+
+  .icon-wrapper svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .numbers-pad {
+    gap: 0.4rem;
+  }
+
+  .number-btn {
+    font-size: 1.3rem;
+  }
+}
+
+/* Tablets and small screens (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  input {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.8rem;
+  }
+
+  .action-buttons {
+    gap: 1.8rem;
+  }
+
+  .numbers-pad {
+    gap: 0.45rem;
+  }
+}
+
+/* Large tablets and small desktops (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .game-info-bar {
+    max-width: 700px;
+  }
+
+  .controls {
+    max-width: 700px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .game-info-bar {
+    margin: 0.3rem auto 0.8rem auto;
+    font-size: 0.8rem;
+  }
+
+  .action-buttons {
+    margin-top: 0.5rem;
+    gap: 1rem;
+  }
+
+  .numbers-pad {
+    padding: 0.5rem;
+  }
+
+  .modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  input {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.3rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+
+  .btn-icon-control,
+  .number-btn,
+  button {
+    min-height: 44px;
+    /* iOS minimum touch target */
+  }
+
+  .number-btn {
+    padding: 0.6rem;
+  }
 }
