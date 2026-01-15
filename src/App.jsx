@@ -96,41 +96,40 @@ function App() {
   }, [isTimerRunning, isPaused, status]);
 
   const handleInput = (rowIndex, cellIndex, value) => {
-    // Only allow input if cell is empty or value matches strict range
-    if (value === "" || (value >= 1 && value <= 9)) {
-      // Determine correctness
-      const numVal = parseInt(value);
-      const isCorrect = !value || numVal === solution[rowIndex][cellIndex];
+    // Strictly accept only numbers 1-9 or an empty string
+    if (value !== "" && !/^[1-9]$/.test(value)) return;
 
-      if (value && !isCorrect) {
-        const newMistakes = mistakes + 1;
-        const limit = (difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3);
+    // Determine correctness
+    const numVal = parseInt(value);
+    const isCorrect = !value || numVal === solution[rowIndex][cellIndex];
 
-        if (newMistakes >= limit) {
-          setMistakes(limit);
-          setStatus("Game Over");
-          setIsTimerRunning(false);
-          setTimeout(() => {
-            alert("Game Over! You reached the mistake limit.");
-            handleReset(); // Or generateNewGame() if preferred, but user said "reset"
-          }, 100);
-          return;
-        }
-        setMistakes(newMistakes);
+    if (value && !isCorrect) {
+      const newMistakes = mistakes + 1;
+      const limit = (difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3);
+
+      if (newMistakes >= limit) {
+        setMistakes(limit);
+        setStatus("Game Over");
+        setIsTimerRunning(false);
+        setTimeout(() => {
+          alert("Game Over! You reached the mistake limit.");
+          handleReset(); // Or generateNewGame() if preferred, but user said "reset"
+        }, 100);
+        return;
       }
-
-      setBoard((prev) =>
-        prev.map((row, r) =>
-          row.map((cell, c) => {
-            if (r === rowIndex && c === cellIndex) {
-              return value ? parseInt(value) : null;
-            }
-
-            return cell;
-          })
-        )
-      );
+      setMistakes(newMistakes);
     }
+
+    setBoard((prev) =>
+      prev.map((row, r) =>
+        row.map((cell, c) => {
+          if (r === rowIndex && c === cellIndex) {
+            return value ? parseInt(value) : null;
+          }
+          return cell;
+        })
+      )
+    );
   };
 
   // to Calculate finished numbers that appear 9 times correctly
@@ -144,17 +143,21 @@ function App() {
     return counts.map((count, num) => count === 9).slice(1);
   }, [board, solution]);
 
-  // to handle the global Numberpad (Short Press: Input)
+  // to handle the global Numberpad (Standard Click / Tap)
   const handleNumberClick = (num) => {
-    if (selected && puzzle[selected[0]][selected[1]] === null) {
+    if (selectedNumber === num) {
+      // Deactivate if clicking the same number that is being highlighted
+      setSelectedNumber(null);
+    } else if (selected && puzzle[selected[0]][selected[1]] === null) {
+      // Input into selected cell
       handleInput(selected[0], selected[1], num.toString());
-      setSelectedNumber(null); // Deselect after input as requested
+      setSelectedNumber(null);
     }
   };
 
-  // to handle the global Numberpad (Long Press: Highlight)
+  // to handle the global Numberpad (Long Press: Highlight occurrences)
   const handleNumberLongPress = (num) => {
-    setSelectedNumber(prev => (prev === num ? null : num));
+    setSelectedNumber(num);
   };
 
   // This monitors the board and instantly detects when the game is won.
@@ -377,9 +380,9 @@ function App() {
           handleReset={handleReset}
           handleNewPuzzle={handleNewPuzzle}
           handleNumberClick={handleNumberClick}
+          handleNumberLongPress={handleNumberLongPress}
           selectedNumber={selectedNumber}
           finishedNumbers={finishedNumbers}
-          handleNumberLongPress={handleNumberLongPress}
           handleHint={handleHint}
           hintsUsed={hintsUsed}
           difficulty={difficulty}

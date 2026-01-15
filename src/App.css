@@ -1,5 +1,5 @@
 :root {
-  --primary: rgb(221, 111, 22);
+  --primary: rgb(162, 148, 249);
   --bg-color: #ffffff;
   --text-color: #333333;
   --bg-cell: #ffffff;
@@ -7,13 +7,13 @@
   --btn-reset-bg: #eee;
   --btn-reset-text: #333;
 
-  --bg-highlight: rgb(248, 178, 89);
-  --area-highlight: rgba(243, 217, 184, 0.705);
-  --same-value: rgb(243, 217, 184);
+  --bg-highlight: rgb(229, 217, 242);
+  --area-highlight: rgb(245, 239, 255);
+  --same-value: rgb(205, 193, 255);
 }
 
 body.dark {
-  --primary: rgb(221, 111, 22);
+  --primary: rgb(162, 148, 249);
   --bg-color: #1a1a1a;
   --text-color: #f0f0f0;
   --bg-cell: #2a2a2a;
@@ -22,9 +22,9 @@ body.dark {
   --btn-reset-text: #eee;
 
 
-  --bg-highlight: rgb(248, 178, 89);
-  --area-highlight: rgba(245, 206, 155, 0.692);
-  --same-value: rgb(245, 206, 155);
+  --bg-highlight: rgba(162, 148, 249, 0.5);
+  --area-highlight: rgba(162, 148, 249, 0.15);
+  --same-value: rgba(162, 148, 249, 0.3);
 }
 
 body {
@@ -118,7 +118,7 @@ input:focus {
 }
 
 .blue-highlight {
-  background-color: rgb(202, 115, 0) !important;
+  background-color: var(--same-value) !important;
 }
 
 .conflict {
@@ -290,8 +290,8 @@ h1 {
 }
 
 .btn-pause {
-  background: #d5d2d2;
-  border: none;
+  background: transparent;
+  border: 1px solid var(--primary);
   color: var(--primary);
   font-size: 1.2rem;
   cursor: pointer;

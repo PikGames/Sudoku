@@ -6,11 +6,7 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
   const timerRef = useRef(null);
   const isLongPress = useRef(false);
 
-  const startPress = (e) => {
-    // Prevent default context menu on touch
-    if (e.type === 'touchstart') {
-      // e.preventDefault(); // Don't prevent default indiscriminately, might block scrolling
-    }
+  const startPress = () => {
     isLongPress.current = false;
     timerRef.current = setTimeout(() => {
       isLongPress.current = true;
@@ -18,10 +14,10 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
         navigator.vibrate(50);
       }
       onLongPress(num);
-    }, 600); // 600ms threshold for long press
+    }, 500); // 500ms threshold for long press
   };
 
-  const endPress = (e) => {
+  const endPress = () => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -38,7 +34,7 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
       timerRef.current = null;
     }
     isLongPress.current = false;
-  }
+  };
 
   return (
     <button
@@ -47,12 +43,8 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
       onMouseUp={endPress}
       onMouseLeave={cancelPress}
       onTouchStart={startPress}
-      onTouchEnd={(e) => {
-        // e.preventDefault(); // Prevent ghost clicks
-        endPress(e);
-      }}
+      onTouchEnd={endPress}
       onTouchCancel={cancelPress}
-      // Disable default context menu to allow long-press on mobile
       onContextMenu={(e) => e.preventDefault()}
     >
       {num}
