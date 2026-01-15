@@ -1,10 +1,66 @@
 import classNames from 'classnames';
 import { Moon, Sun } from 'lucide-react'
-import React from 'react'
+import React, { useRef } from 'react'
 
+const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
+  const timerRef = useRef(null);
+  const isLongPress = useRef(false);
 
+  const startPress = (e) => {
+    // Prevent default context menu on touch
+    if (e.type === 'touchstart') {
+      // e.preventDefault(); // Don't prevent default indiscriminately, might block scrolling
+    }
+    isLongPress.current = false;
+    timerRef.current = setTimeout(() => {
+      isLongPress.current = true;
+      if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      onLongPress(num);
+    }, 600); // 600ms threshold for long press
+  };
 
-export default function Controls({ handleCheck, handleReset, handleNewPuzzle, theme, toggleTheme, handleNumberButtonClick, selectedNumber, finishedNumbers, difficulty, setDifficulty, handleErase, handleHint, hintUsed,}) {
+  const endPress = (e) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    if (!isLongPress.current) {
+      onClick(num);
+    }
+    isLongPress.current = false;
+  };
+
+  const cancelPress = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    isLongPress.current = false;
+  }
+
+  return (
+    <button
+      className={classNames("number-btn", { active: isActive })}
+      onMouseDown={startPress}
+      onMouseUp={endPress}
+      onMouseLeave={cancelPress}
+      onTouchStart={startPress}
+      onTouchEnd={(e) => {
+        // e.preventDefault(); // Prevent ghost clicks
+        endPress(e);
+      }}
+      onTouchCancel={cancelPress}
+      // Disable default context menu to allow long-press on mobile
+      onContextMenu={(e) => e.preventDefault()}
+    >
+      {num}
+    </button>
+  );
+};
+
+export default function Controls({ handleCheck, handleReset, handleNewPuzzle, theme, toggleTheme, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, difficulty, setDifficulty, handleErase, handleHint, hintUsed, }) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
@@ -13,15 +69,13 @@ export default function Controls({ handleCheck, handleReset, handleNewPuzzle, th
         <div className='numbers-pad'>
           {numbers.map((num, index) => (
             !finishedNumbers[index] && (
-              <button
+              <NumberButton
                 key={num}
-                className={classNames("number-btn", {
-                  active: selectedNumber === num,
-                })}
-                onClick={() => handleNumberButtonClick(num)}
-              >
-                {num}
-              </button>
+                num={num}
+                isActive={selectedNumber === num}
+                onClick={handleNumberClick}
+                onLongPress={handleNumberLongPress}
+              />
             )
           ))}
         </div>

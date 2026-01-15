@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import "./App.css";
 import Grid from "./components/Grid";
 import Controls from "./components/Controls";
@@ -41,7 +41,7 @@ function App() {
   useEffect(() => {
     generateNewGame();
   }, [difficulty]);
-  
+
   const toggleTheme = () => {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
   };
@@ -91,7 +91,7 @@ function App() {
     }
   };
 
-    // to Calculate finished numbers that appear 9 times correctly
+  // to Calculate finished numbers that appear 9 times correctly
   const finishedNumbers = useMemo(() => {
     const counts = Array(10).fill(0);
     board.flat().forEach((cell, i) => {
@@ -102,17 +102,18 @@ function App() {
     return counts.map((count, num) => count === 9).slice(1);
   }, [board, solution]);
 
-    // to handle the global Numberpad
-    const handleNumberButtonClick = (num) => {
-      if (selectedNumber === num) {
-        setSelectedNumber(null);
-      } else {
-        setSelectedNumber(num);
-        if (selected && puzzle[selected[0]][selected[1]] === null) {
-          handleInput(selected[0], selected[1], num.toString());
-        }
-      }
-    };
+  // to handle the global Numberpad (Short Press: Input)
+  const handleNumberClick = (num) => {
+    if (selected && puzzle[selected[0]][selected[1]] === null) {
+      handleInput(selected[0], selected[1], num.toString());
+      setSelectedNumber(null); // Deselect after input as requested
+    }
+  };
+
+  // to handle the global Numberpad (Long Press: Highlight)
+  const handleNumberLongPress = (num) => {
+    setSelectedNumber(prev => (prev === num ? null : num));
+  };
 
   // This monitors the board and instantly detects when the game is won.
   useEffect(() => {
@@ -141,20 +142,39 @@ function App() {
       setGreenCount(0);
     }
   }, [board, solution]);
-    //generating a new game 
-    const generateNewGame = () => {
-      const fullBoard = generateSudoku();
-      const playablePuzzle = createPuzzle(fullBoard, difficulty);
-  
-      setSolution(fullBoard);
-      setPuzzle(playablePuzzle);
-      setBoard(playablePuzzle.map(row => [...row]));
-      setStatus("");
-      setSelected(null);
-      setGreenCount(0);
-      setSelectedNumber(null);
-      setHintUsed(false);
+
+  // Handle click outside to deselect
+  const gameContainerRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (gameContainerRef.current && !gameContainerRef.current.contains(event.target)) {
+        setSelected(null);
+        setSelectedNumber(null);
+      }
     };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside); // Support mobile touch too
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
+  //generating a new game 
+  const generateNewGame = () => {
+    const fullBoard = generateSudoku();
+    const playablePuzzle = createPuzzle(fullBoard, difficulty);
+
+    setSolution(fullBoard);
+    setPuzzle(playablePuzzle);
+    setBoard(playablePuzzle.map(row => [...row]));
+    setStatus("");
+    setSelected(null);
+    setGreenCount(0);
+    setSelectedNumber(null);
+    setHintUsed(false);
+  };
 
   // FEATURE: Gameplay Action Handlers
   const handleErase = () => {
@@ -163,37 +183,47 @@ function App() {
     }
   };
 
-    const handleHint = () => {
-      if (hintUsed) return;
-  
-      // Find all empty or incorrect cells
-      const emptyCells = [];
-      board.forEach((row, rowIndex) => {
-        row.forEach((cell, cellIndex) => {
-          if (cell === null) {
-            emptyCells.push({ rowIndex, cellIndex });
-          }
-        });
+  const handleHint = () => {
+    if (hintUsed) return;
+
+    // Find all empty or incorrect cells
+    const emptyCells = [];
+    board.forEach((row, rowIndex) => {
+      row.forEach((cell, cellIndex) => {
+        if (cell === null) {
+          emptyCells.push({ rowIndex, cellIndex });
+        }
       });
-  
-      if (emptyCells.length === 0) return;
-  
-      // Pick a random empty cell
-      const randomIndex = Math.floor(Math.random() * emptyCells.length);
-      const { rowIndex, cellIndex } = emptyCells[randomIndex];
-  
-      // Fill it with the correct value
-      const correctValue = solution[rowIndex][cellIndex];
-  
-      setBoard(prev => prev.map((row, r) =>
-        row.map((cell, c) => (r === rowIndex && c === cellIndex ? correctValue : cell))
-      ));
-  
-      setHintUsed(true);
-    };
+    });
+
+    if (emptyCells.length === 0) return;
+
+    // Pick a random empty cell
+    const randomIndex = Math.floor(Math.random() * emptyCells.length);
+    const { rowIndex, cellIndex } = emptyCells[randomIndex];
+
+    // Fill it with the correct value
+    const correctValue = solution[rowIndex][cellIndex];
+
+    setBoard(prev => prev.map((row, r) =>
+      row.map((cell, c) => (r === rowIndex && c === cellIndex ? correctValue : cell))
+    ));
+
+    setHintUsed(true);
+  };
+
+  const handleCellClick = (rowIndex, cellIndex) => {
+    // If a number is selected (Paint Mode) and the cell is editable
+    if (selectedNumber !== null && puzzle[rowIndex][cellIndex] === null) {
+      handleInput(rowIndex, cellIndex, selectedNumber.toString());
+    } else {
+      // Otherwise, standard select
+      setSelected([rowIndex, cellIndex]);
+    }
+  };
   return (
     <>
-      <div style={{ textAlign: "center" }}>
+      <div style={{ textAlign: "center" }} ref={gameContainerRef}>
         <h1>Sudoku</h1>
         <Grid
           board={board}
@@ -204,6 +234,7 @@ function App() {
           greenCount={greenCount}
           selectedNumber={selectedNumber}
           solution={solution}
+          handleCellClick={handleCellClick}
         />
         <Controls
           handleCheck={handleCheck}
@@ -213,7 +244,8 @@ function App() {
           toggleTheme={toggleTheme}
           finishedNumbers={finishedNumbers}
           selectedNumber={selectedNumber}
-          handleNumberButtonClick={ handleNumberButtonClick}
+          handleNumberClick={handleNumberClick}
+          handleNumberLongPress={handleNumberLongPress}
           difficulty={difficulty}
           setDifficulty={setDifficulty}
           handleHint={handleHint}

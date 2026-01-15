@@ -10,6 +10,7 @@ function Grid({
   greenCount,
   selectedNumber,
   solution,
+  handleCellClick,
 }) {
   return (
     <div className="container">
@@ -44,9 +45,9 @@ function Grid({
                   const isIncorrect = value !== null && value !== solution[rowIndex][cellIndex];
                   // Automatically highlights all instances of the number currently in focus.
                   const isSameValue = selected &&
-                  selectedValue !== null &&
-                  value === selectedValue &&
-                  !isSelected;
+                    selectedValue !== null &&
+                    value === selectedValue &&
+                    !isSelected;
                   return (
                     <td
                       key={cellIndex}
@@ -69,7 +70,7 @@ function Grid({
                           setSelected([rowIndex, cellIndex]);
                         }}
                         onClick={() => {
-                          setSelected([rowIndex, cellIndex]);
+                          handleCellClick(rowIndex, cellIndex);
                         }}
                         onChange={(e) => {
                           handleInput(rowIndex, cellIndex, e.target.value);

@@ -8,7 +8,7 @@
   --border-color: #ccc;
   --pad-bg: #f8f9fa;
   --btn-reset-bg: #eee;
-  --btn-reset-text: #333; 
+  --btn-reset-text: #333;
 }
 
 body.dark {
@@ -31,7 +31,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.container{
+.container {
   border-radius: 0.5rem;
   padding: 1rem;
   background: var(--bg-cell);
@@ -42,7 +42,7 @@ body {
   margin: 0 auto;
 }
 
-.table{
+.table {
   border-collapse: collapse;
 }
 
@@ -57,7 +57,8 @@ body {
 .cell:nth-child(9) {
   border-right: 3px solid var(--text-color);
 }
-.cell:nth-child(1){
+
+.cell:nth-child(1) {
   border-left: 3px solid var(--text-color);
 }
 
@@ -67,7 +68,7 @@ body {
   border-bottom: 3px solid var(--text-color);
 }
 
-.table tr:nth-child(1) .cell{
+.table tr:nth-child(1) .cell {
   border-top: 3px solid var(--text-color);
 }
 
@@ -79,13 +80,13 @@ input {
   border: none;
   outline: none;
   background: transparent;
-  color: var(--text-color);
+  color: #007bff;
+  /* Blue color for user-entered numbers */
   cursor: pointer;
   font-weight: 500;
 }
 
 input:read-only {
-  background-color: var(--bg-prefilled);
   font-weight: bold;
   color: var(--text-color);
   cursor: pointer;
@@ -97,7 +98,9 @@ input:focus {
   outline: none;
 }
 
-.same-row, .same-col, .same-box {
+.same-row,
+.same-col,
+.same-box {
   background: #f7e3a3af;
 }
 
@@ -141,6 +144,16 @@ input:focus {
 }
 
 /* Dark Mode Overrides for Highlights */
+body.dark input {
+  color: #60a5fa;
+  /* Lighter blue for user-entered numbers in dark mode */
+}
+
+body.dark input:read-only {
+  color: var(--text-color);
+  /* Keep prefilled numbers default text color */
+}
+
 body.dark .selected-cell {
   background-color: #3b82f6 !important;
 }
@@ -163,7 +176,7 @@ body.dark .prefilled-conflict {
   background-color: #ef4444 !important;
 }
 
-.status{
+.status {
   font-weight: bold;
   position: absolute;
   top: 1rem;
@@ -181,10 +194,11 @@ body.dark .prefilled-conflict {
   transition: background-color 0.3s ease;
 }
 
-.btn-theme{
+.btn-theme {
   border-radius: 10px;
   background-color: #1a1a1a;
 }
+
 .controls {
   margin-top: 4rem;
   display: flex;
@@ -193,9 +207,11 @@ body.dark .prefilled-conflict {
   width: 100%;
   max-width: 600px;
 }
-.numbers-section{
+
+.numbers-section {
   width: 100%;
 }
+
 .numbers-pad {
   display: flex;
   flex-wrap: nowrap;
@@ -203,6 +219,7 @@ body.dark .prefilled-conflict {
   justify-content: center;
   padding: 1rem;
 }
+
 .number-btn {
   width: 3.5rem;
   height: 3.5rem;
@@ -218,23 +235,27 @@ body.dark .prefilled-conflict {
   justify-content: center;
   align-items: center;
 }
+
 .number-btn:hover {
   background: #fffbf0;
   border-color: #f3aa21;
   color: black;
 }
+
 .number-btn.active {
   background: #f3aa21;
   color: white;
   border-color: #d28219;
   box-shadow: 0 0 10px rgba(243, 177, 33, 0.5);
 }
+
 .difficulty-selector {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
 }
+
 .difficulty-selector select {
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -246,6 +267,7 @@ body.dark .prefilled-conflict {
   cursor: pointer;
   outline: none;
 }
+
 .difficulty-selector select:focus {
   border-color: var(--primary);
 }
