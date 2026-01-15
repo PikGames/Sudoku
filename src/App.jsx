@@ -289,7 +289,7 @@ function App() {
   };
   return (
     <>
-      <div style={{ textAlign: "center", position: 'relative' }} ref={gameContainerRef}>
+      <div style={{ textAlign: "center", position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }} ref={gameContainerRef}>
         <div className="game-header-top">
           <h1>Sudoku</h1>
           <button className="btn-settings" onClick={() => setShowSettings(!showSettings)}>

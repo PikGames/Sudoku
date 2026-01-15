@@ -192,7 +192,7 @@ body.dark .prefilled-conflict {
   display: flex;
   flex-wrap: nowrap;
   gap: 0.5rem;
-  justify-content: center;
+  justify-content: space-between;
   padding: 1rem;
 }
 
@@ -209,7 +209,6 @@ body.dark .prefilled-conflict {
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
-  min-width: 2.5rem;
 }
 
 .number-btn:hover {
@@ -402,6 +401,7 @@ body.dark .modal-overlay {
   align-items: center;
   position: relative;
   margin-bottom: 0.5rem;
+  width: 85%;
 }
 
 .game-header-top h1 {
@@ -618,20 +618,25 @@ body.dark .badge {
   }
 
   .table {
-    width: 100%;
+    width: 95%;
     max-width: 340px;
     margin: 0 auto;
   }
 
   input {
-    width: 2.2rem;
-    height: 2.2rem;
-    font-size: 1.2rem;
+    width: 2.1rem;
+    height: 2.1rem;
+    font-size: 0.95rem;
   }
 
   h1 {
-    font-size: 1.6rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .game-header-top {
+    width: 70%;
+    margin-bottom: 0.3rem;
   }
 
   .game-info-bar {
@@ -639,6 +644,7 @@ body.dark .badge {
     gap: 0.3rem;
     margin: 0.3rem auto 1rem auto;
     padding: 0 0.5rem;
+    width: 90%;
   }
 
   .info-item.left {
@@ -731,15 +737,15 @@ body.dark .badge {
   }
 
   .table {
-    width: 100%;
+    width: 85%;
     max-width: 420px;
     margin: 0 auto;
   }
 
   input {
-    width: 2.8rem;
-    height: 2.8rem;
-    font-size: 1.5rem;
+    width: 2.3rem;
+    height: 2.3rem;
+    font-size: 1rem;
   }
 
   h1 {
@@ -748,6 +754,7 @@ body.dark .badge {
 
   .game-info-bar {
     font-size: 0.85rem;
+    width: 82%;
   }
 
   .action-buttons {
