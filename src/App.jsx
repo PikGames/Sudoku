@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import Grid from "./components/Grid";
 import Controls from "./components/Controls";
+import { generateSudoku, createPuzzle } from "./utils/sudoku";
 
 function App() {
   //This is the game state Initilazation that we maintain the board, static puzzle and the hidden solution separated
@@ -27,12 +28,18 @@ function App() {
   const [greenCount, setGreenCount] = useState(0);
   const [theme, setTheme] = useState(localStorage.getItem("sudoku-theme") || "light");
   const [selectedNumber, setSelectedNumber] = useState(null);
+  const [difficulty, setDifficulty] = useState("easy");
 
   //to save the theme
   useEffect(() => {
     localStorage.setItem("sudoku-theme", theme);
     document.body.className = theme;
   }, [theme]);
+
+  //for the difficulty
+  useEffect(() => {
+    generateNewGame();
+  }, [difficulty]);
   
   const toggleTheme = () => {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
@@ -63,8 +70,8 @@ function App() {
     setSelected(null);
     setGreenCount(0);
   };
-  const handleNamePuzzle = () => {
-    setGreenCount(0)
+  const handleNewPuzzle = () => {
+    generateNewGame();
   };
 
   const handleInput = (rowIndex, cellIndex, value) => {
@@ -106,6 +113,46 @@ function App() {
       }
     };
 
+  // This monitors the board and instantly detects when the game is won.
+  useEffect(() => {
+    // Check if board is full and correct
+    const sudokuBoard = board.flat();
+    const sudokuSolution = solution.flat();
+
+    // Check if there are no null values and all cells match the solution
+    const isFull = !sudokuBoard.includes(null);
+    if (isFull && sudokuBoard.every((cell, i) => cell === sudokuSolution[i])) {
+      if (status !== 'Solved') {
+        setStatus('Solved');
+
+        // this will triggers a green-fill animation over the grid.
+        let count = 0;
+        const totalCells = 81;
+        const interval = setInterval(() => {
+          count++;
+          setGreenCount(count);
+          if (count === totalCells) clearInterval(interval);
+        }, 30);
+      }
+    } else if (status === 'Solved') {
+      // If they were in solved state but changed something (shouldn't happen with prefilled, but for robustness)
+      setStatus("");
+      setGreenCount(0);
+    }
+  }, [board, solution]);
+    //generating a new game 
+    const generateNewGame = () => {
+      const fullBoard = generateSudoku();
+      const playablePuzzle = createPuzzle(fullBoard, difficulty);
+  
+      setSolution(fullBoard);
+      setPuzzle(playablePuzzle);
+      setBoard(playablePuzzle.map(row => [...row]));
+      setStatus("");
+      setSelected(null);
+      setGreenCount(0);
+      setSelectedNumber(null);
+    };
   return (
     <>
       <div style={{ textAlign: "center" }}>
@@ -118,16 +165,19 @@ function App() {
           handleInput={handleInput}
           greenCount={greenCount}
           selectedNumber={selectedNumber}
+          solution={solution}
         />
         <Controls
           handleCheck={handleCheck}
           handleReset={handleReset}
-          handleNamePuzzle={handleNamePuzzle}
+          handleNewPuzzle={handleNewPuzzle}
           theme={theme}
           toggleTheme={toggleTheme}
           finishedNumbers={finishedNumbers}
           selectedNumber={selectedNumber}
           handleNumberButtonClick={ handleNumberButtonClick}
+          difficulty={difficulty}
+          setDifficulty={setDifficulty}
         />
         {status && <h2 className="status">{status}</h2>}
       </div>

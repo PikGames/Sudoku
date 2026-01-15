@@ -101,6 +101,68 @@ input:focus {
   background: #f7e3a3af;
 }
 
+/* Added Highlight Classes */
+.selected-cell {
+  background-color: rgb(187, 222, 251) !important;
+}
+
+/* Ensure the input doesn't hide the cell background when selected */
+.selected-cell input {
+  background-color: transparent !important;
+}
+
+.area-highlight {
+  background-color: #e2e8f0;
+}
+
+.same-value {
+  background-color: rgb(195, 221, 253);
+}
+
+.blue-highlight {
+  background-color: rgb(144, 202, 249) !important;
+}
+
+.conflict {
+  background-color: #fca5a5 !important;
+}
+
+.incorrect {
+  background-color: #fecaca !important;
+}
+
+.text-incorrect {
+  color: red !important;
+}
+
+.prefilled-conflict {
+  color: red !important;
+  background-color: #fca5a5 !important;
+}
+
+/* Dark Mode Overrides for Highlights */
+body.dark .selected-cell {
+  background-color: #3b82f6 !important;
+}
+
+body.dark .area-highlight {
+  background-color: #334155;
+}
+
+body.dark .same-value {
+  background-color: #1e40af;
+}
+
+body.dark .blue-highlight {
+  background-color: #2563eb !important;
+}
+
+body.dark .conflict,
+body.dark .incorrect,
+body.dark .prefilled-conflict {
+  background-color: #ef4444 !important;
+}
+
 .status{
   font-weight: bold;
   position: absolute;
@@ -115,7 +177,7 @@ input:focus {
 }
 
 .green {
-  background-color: #aef7aeb2;
+  background-color: #aef7aeb2 !important;
   transition: background-color 0.3s ease;
 }
 
@@ -166,4 +228,24 @@ input:focus {
   color: white;
   border-color: #d28219;
   box-shadow: 0 0 10px rgba(243, 177, 33, 0.5);
+}
+.difficulty-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+.difficulty-selector select {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-cell);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+}
+.difficulty-selector select:focus {
+  border-color: var(--primary);
 }
