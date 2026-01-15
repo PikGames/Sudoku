@@ -29,6 +29,7 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem("sudoku-theme") || "light");
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [difficulty, setDifficulty] = useState("easy");
+  const [hintUsed, setHintUsed] = useState(false);
 
   //to save the theme
   useEffect(() => {
@@ -152,6 +153,43 @@ function App() {
       setSelected(null);
       setGreenCount(0);
       setSelectedNumber(null);
+      setHintUsed(false);
+    };
+
+  // FEATURE: Gameplay Action Handlers
+  const handleErase = () => {
+    if (selected && puzzle[selected[0]][selected[1]] === null) {
+      handleInput(selected[0], selected[1], "");
+    }
+  };
+
+    const handleHint = () => {
+      if (hintUsed) return;
+  
+      // Find all empty or incorrect cells
+      const emptyCells = [];
+      board.forEach((row, rowIndex) => {
+        row.forEach((cell, cellIndex) => {
+          if (cell === null) {
+            emptyCells.push({ rowIndex, cellIndex });
+          }
+        });
+      });
+  
+      if (emptyCells.length === 0) return;
+  
+      // Pick a random empty cell
+      const randomIndex = Math.floor(Math.random() * emptyCells.length);
+      const { rowIndex, cellIndex } = emptyCells[randomIndex];
+  
+      // Fill it with the correct value
+      const correctValue = solution[rowIndex][cellIndex];
+  
+      setBoard(prev => prev.map((row, r) =>
+        row.map((cell, c) => (r === rowIndex && c === cellIndex ? correctValue : cell))
+      ));
+  
+      setHintUsed(true);
     };
   return (
     <>
@@ -178,6 +216,9 @@ function App() {
           handleNumberButtonClick={ handleNumberButtonClick}
           difficulty={difficulty}
           setDifficulty={setDifficulty}
+          handleHint={handleHint}
+          hintUsed={hintUsed}
+          handleErase={handleErase}
         />
         {status && <h2 className="status">{status}</h2>}
       </div>

@@ -4,7 +4,7 @@ import React from 'react'
 
 
 
-export default function Controls({ handleCheck, handleReset, handleNewPuzzle, theme, toggleTheme, handleNumberButtonClick, selectedNumber, finishedNumbers, difficulty, setDifficulty, }) {
+export default function Controls({ handleCheck, handleReset, handleNewPuzzle, theme, toggleTheme, handleNumberButtonClick, selectedNumber, finishedNumbers, difficulty, setDifficulty, handleErase, handleHint, hintUsed,}) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
@@ -27,9 +27,17 @@ export default function Controls({ handleCheck, handleReset, handleNewPuzzle, th
         </div>
       </div>
       <div style={{ marginTop: 16 }}>
+        <button onClick={handleErase} style={{ marginRight: 8 }}>Erase</button>
         <button onClick={handleCheck} style={{ marginRight: 8 }}>Check</button>
         <button onClick={handleReset} style={{ marginRight: 8 }}>Reset</button>
         <button onClick={handleNewPuzzle} style={{ marginRight: 8 }}>New Puzzle</button>
+        <button
+          className="btn-hint"
+          onClick={handleHint}
+          disabled={hintUsed}
+        >
+          {hintUsed ? "Hint Used" : "Get Hint"}
+        </button>
         <button onClick={toggleTheme} className='btn-theme'>{theme === "light" ? <Moon size={16} color='#049bffff' /> : <Sun size={16} color='#ffbb00ff' />}</button>
       </div>
       <div className="difficulty-selector">
