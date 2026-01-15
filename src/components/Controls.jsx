@@ -60,7 +60,7 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
   );
 };
 
-export default function Controls({ handleCheck, handleReset, handleNewPuzzle, theme, toggleTheme, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, difficulty, setDifficulty, handleErase, handleHint, hintUsed, }) {
+export default function Controls({ handleCheck, handleReset, handleNewPuzzle, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, handleErase, handleHint, hintUsed, }) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
@@ -92,21 +92,6 @@ export default function Controls({ handleCheck, handleReset, handleNewPuzzle, th
         >
           {hintUsed ? "Hint Used" : "Get Hint"}
         </button>
-        <button onClick={toggleTheme} className='btn-theme'>{theme === "light" ? <Moon size={16} color='#049bffff' /> : <Sun size={16} color='#ffbb00ff' />}</button>
-      </div>
-      <div className="difficulty-selector">
-        <label htmlFor="difficulty">Difficulty: </label>
-        <select
-          id="difficulty"
-          value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
-        >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-          <option value="expert">Expert</option>
-          <option value="devilMode">Devil Mode</option>
-        </select>
       </div>
     </div>
   )

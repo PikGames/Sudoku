@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import "./App.css";
+import { Settings, Moon, Sun } from 'lucide-react';
 import Grid from "./components/Grid";
 import Controls from "./components/Controls";
 import { generateSudoku, createPuzzle } from "./utils/sudoku";
@@ -38,6 +39,7 @@ function App() {
     return saved ? JSON.parse(saved) : {};
   });
   const [isPaused, setIsPaused] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -308,8 +310,40 @@ function App() {
   };
   return (
     <>
-      <div style={{ textAlign: "center" }} ref={gameContainerRef}>
-        <h1>Sudoku</h1>
+      <div style={{ textAlign: "center", position: 'relative' }} ref={gameContainerRef}>
+        <div className="game-header-top">
+          <h1>Sudoku</h1>
+          <button className="btn-settings" onClick={() => setShowSettings(!showSettings)}>
+            <Settings size={28} />
+          </button>
+          {showSettings && (
+            <div className="settings-popup">
+              <div className="setting-item">
+                <span className="setting-label">Difficulty</span>
+                <select
+                  value={difficulty}
+                  onChange={(e) => {
+                    setDifficulty(e.target.value);
+                    setShowSettings(false);
+                  }}
+                  className="difficulty-select"
+                >
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                  <option value="expert">Expert</option>
+                  <option value="devilMode">Devil Mode</option>
+                </select>
+              </div>
+              <div className="setting-item">
+                <span className="setting-label">Theme</span>
+                <button onClick={toggleTheme} className='btn-theme-toggle'>
+                  {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="game-info-bar">
           <div className="info-item left">
             {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -364,14 +398,10 @@ function App() {
           handleCheck={handleCheck}
           handleReset={handleReset}
           handleNewPuzzle={handleNewPuzzle}
-          theme={theme}
-          toggleTheme={toggleTheme}
-          finishedNumbers={finishedNumbers}
-          selectedNumber={selectedNumber}
           handleNumberClick={handleNumberClick}
+          selectedNumber={selectedNumber}
+          finishedNumbers={finishedNumbers}
           handleNumberLongPress={handleNumberLongPress}
-          difficulty={difficulty}
-          setDifficulty={setDifficulty}
           handleHint={handleHint}
           hintUsed={hintUsed}
           handleErase={handleErase}

@@ -1,5 +1,5 @@
 :root {
-  --primary: #646cff;
+  --primary: #ffc164;
   --bg-color: #ffffff;
   --text-color: #333333;
   --bg-cell: #ffffff;
@@ -13,7 +13,7 @@
 
 body.dark {
   --gray: #ccc;
-  --primary: #747bff;
+  --primary: #ffda74;
   --bg-color: #1a1a1a;
   --text-color: #f0f0f0;
   --bg-cell: #2a2a2a;
@@ -335,25 +335,29 @@ h1 {
 }
 
 .btn-pause {
-    background: #d5d2d2;
-    border: none;
-    color: var(--text-color);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-    opacity: 0.7;
-    transition: opacity 0.2s, transform 0.1s;
-    width: 25px;
-    height: 25px;
-    display: flex;
-    justify-content: center;
-    border-radius: 100%;
+  background: #d5d2d2;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.1s;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  border-radius: 100%;
 }
 
 .btn-pause:hover {
   opacity: 1;
   transform: scale(1.1);
+}
+
+.btn-pause:focus {
+  outline: none;
 }
 
 /* Modal Overlay */
@@ -433,4 +437,108 @@ h1 {
 /* Dark mode tweaks for modal */
 body.dark .modal-overlay {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Header Layout */
+.game-header-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.game-header-top h1 {
+  margin: 0;
+  /* Ensure H1 doesn't push status/gear weirdly */
+}
+
+/* Settings Button */
+.btn-settings {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-settings:hover {
+  opacity: 1;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.btn-settings:focus {
+  outline: none;
+}
+
+/* Settings Popup Menu */
+.settings-popup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  background-color: var(--bg-cell);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.difficulty-select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.btn-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.btn-theme-toggle:hover {
+  background-color: var(--bg-highlight);
+}
+
+/* Dark Mode tweaks for settings */
+body.dark .settings-popup {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
