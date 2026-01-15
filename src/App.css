@@ -98,7 +98,7 @@ input:focus {
 }
 
 .same-row, .same-col, .same-box {
-  background: #e6f0ff63;
+  background: #f7e3a3af;
 }
 
 .status{
@@ -115,11 +115,55 @@ input:focus {
 }
 
 .green {
-  background-color: #a6f1a6;
+  background-color: #aef7aeb2;
   transition: background-color 0.3s ease;
 }
 
 .btn-theme{
   border-radius: 10px;
   background-color: #1a1a1a;
+}
+.controls {
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+.numbers-section{
+  width: 100%;
+}
+.numbers-pad {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding: 1rem;
+}
+.number-btn {
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 2px solid var(--border-color);
+  background: var(--bg-cell);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.number-btn:hover {
+  background: #fffbf0;
+  border-color: #f3aa21;
+  color: black;
+}
+.number-btn.active {
+  background: #f3aa21;
+  color: white;
+  border-color: #d28219;
+  box-shadow: 0 0 10px rgba(243, 177, 33, 0.5);
 }

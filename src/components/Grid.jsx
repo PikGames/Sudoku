@@ -8,6 +8,7 @@ function Grid({
   setSelected,
   handleInput,
   greenCount,
+  selectedNumber,
 }) {
   return (
     <div className="container">
@@ -19,6 +20,7 @@ function Grid({
                 {row.map((cell, cellIndex) => {
                   const isPrefilled = puzzle[rowIndex][cellIndex] !== null;
                   const cellIn = rowIndex * 9 + cellIndex;
+                  const value = cell;
                   return (
                     <td
                       key={cellIndex}
@@ -32,6 +34,8 @@ function Grid({
                           Math.floor(cellIndex / 3) ===
                             Math.floor(selected[1] / 3),
                         green: cellIn < greenCount,
+                        "blue-highlight": selectedNumber !== null && value === selectedNumber,
+
                       })}
                     >
                       <input

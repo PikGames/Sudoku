@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 import Grid from "./components/Grid";
 import Controls from "./components/Controls";
 
 function App() {
+  //This is the game state Initilazation that we maintain the board, static puzzle and the hidden solution separated
   const [board, setBoard] = useState(
     Array(9)
       .fill(null)
@@ -24,6 +25,18 @@ function App() {
   const [selected, setSelected] = useState(null);
   const [status, setStatus] = useState("");
   const [greenCount, setGreenCount] = useState(0);
+  const [theme, setTheme] = useState(localStorage.getItem("sudoku-theme") || "light");
+  const [selectedNumber, setSelectedNumber] = useState(null);
+
+  //to save the theme
+  useEffect(() => {
+    localStorage.setItem("sudoku-theme", theme);
+    document.body.className = theme;
+  }, [theme]);
+  
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
 
   const handleCheck = () => {
     const sudokuBoard = board.flat();
@@ -54,16 +67,6 @@ function App() {
     setGreenCount(0)
   };
 
-  const [theme, setTheme] = useState(localStorage.getItem("sudoku-theme") || "light");
-
-  useEffect(() => {
-    localStorage.setItem("sudoku-theme", theme);
-    document.body.className = theme;
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => (prev === "light" ? "dark" : "light"));
-  };
   const handleInput = (rowIndex, cellIndex, value) => {
     if (value === "" || (value >= 1 && value <= 9)) {
       setBoard((prev) =>
@@ -80,6 +83,29 @@ function App() {
     }
   };
 
+    // to Calculate finished numbers that appear 9 times correctly
+  const finishedNumbers = useMemo(() => {
+    const counts = Array(10).fill(0);
+    board.flat().forEach((cell, i) => {
+      if (cell !== null && cell === solution.flat()[i]) {
+        counts[cell]++;
+      }
+    });
+    return counts.map((count, num) => count === 9).slice(1);
+  }, [board, solution]);
+
+    // to handle the global Numberpad
+    const handleNumberButtonClick = (num) => {
+      if (selectedNumber === num) {
+        setSelectedNumber(null);
+      } else {
+        setSelectedNumber(num);
+        if (selected && puzzle[selected[0]][selected[1]] === null) {
+          handleInput(selected[0], selected[1], num.toString());
+        }
+      }
+    };
+
   return (
     <>
       <div style={{ textAlign: "center" }}>
@@ -91,6 +117,7 @@ function App() {
           setSelected={setSelected}
           handleInput={handleInput}
           greenCount={greenCount}
+          selectedNumber={selectedNumber}
         />
         <Controls
           handleCheck={handleCheck}
@@ -98,6 +125,9 @@ function App() {
           handleNamePuzzle={handleNamePuzzle}
           theme={theme}
           toggleTheme={toggleTheme}
+          finishedNumbers={finishedNumbers}
+          selectedNumber={selectedNumber}
+          handleNumberButtonClick={ handleNumberButtonClick}
         />
         {status && <h2 className="status">{status}</h2>}
       </div>
