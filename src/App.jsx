@@ -30,6 +30,20 @@ function App() {
   const [selectedNumber, setSelectedNumber] = useState(null);
   const [difficulty, setDifficulty] = useState("easy");
   const [hintUsed, setHintUsed] = useState(false);
+  const [mistakes, setMistakes] = useState(0);
+  const [timer, setTimer] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [bestTimes, setBestTimes] = useState(() => {
+    const saved = localStorage.getItem("sudoku-best-times");
+    return saved ? JSON.parse(saved) : {};
+  });
+  const [isPaused, setIsPaused] = useState(false);
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   //to save the theme
   useEffect(() => {
@@ -52,6 +66,15 @@ function App() {
 
     if (sudokuBoard.every((cell, i) => cell === sudokuSolution[i])) {
       setStatus('Solved');
+      setIsTimerRunning(false);
+
+      // Check Best Time
+      const currentBest = bestTimes[difficulty];
+      if (currentBest === undefined || timer < currentBest) {
+        const newBestTimes = { ...bestTimes, [difficulty]: timer };
+        setBestTimes(newBestTimes);
+        localStorage.setItem("sudoku-best-times", JSON.stringify(newBestTimes));
+      }
 
       let count = 0;
       const totalCells = 81;
@@ -70,13 +93,52 @@ function App() {
     setStatus("");
     setSelected(null);
     setGreenCount(0);
+    setMistakes(0);
+    setTimer(0);
+    setIsTimerRunning(true);
+    setIsPaused(false);
   };
   const handleNewPuzzle = () => {
     generateNewGame();
   };
 
+  // Timer Effect
+  useEffect(() => {
+    let interval = null;
+    if (isTimerRunning && !isPaused && status !== 'Solved' && status !== 'Game Over') {
+      interval = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isTimerRunning, isPaused, status]);
+
   const handleInput = (rowIndex, cellIndex, value) => {
+    // Only allow input if cell is empty or value matches strict range
     if (value === "" || (value >= 1 && value <= 9)) {
+      // Determine correctness
+      const numVal = parseInt(value);
+      const isCorrect = !value || numVal === solution[rowIndex][cellIndex];
+
+      if (value && !isCorrect) {
+        const newMistakes = mistakes + 1;
+        const limit = (difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3);
+
+        if (newMistakes >= limit) {
+          setMistakes(limit);
+          setStatus("Game Over");
+          setIsTimerRunning(false);
+          setTimeout(() => {
+            alert("Game Over! You reached the mistake limit.");
+            handleReset(); // Or generateNewGame() if preferred, but user said "reset"
+          }, 100);
+          return;
+        }
+        setMistakes(newMistakes);
+      }
+
       setBoard((prev) =>
         prev.map((row, r) =>
           row.map((cell, c) => {
@@ -126,6 +188,15 @@ function App() {
     if (isFull && sudokuBoard.every((cell, i) => cell === sudokuSolution[i])) {
       if (status !== 'Solved') {
         setStatus('Solved');
+        setIsTimerRunning(false);
+
+        // Check Best Time
+        const currentBest = bestTimes[difficulty];
+        if (currentBest === undefined || timer < currentBest) {
+          const newBestTimes = { ...bestTimes, [difficulty]: timer };
+          setBestTimes(newBestTimes);
+          localStorage.setItem("sudoku-best-times", JSON.stringify(newBestTimes));
+        }
 
         // this will triggers a green-fill animation over the grid.
         let count = 0;
@@ -141,7 +212,7 @@ function App() {
       setStatus("");
       setGreenCount(0);
     }
-  }, [board, solution]);
+  }, [board, solution, timer, bestTimes, difficulty, status]);
 
   // Handle click outside to deselect
   const gameContainerRef = useRef(null);
@@ -170,10 +241,14 @@ function App() {
     setPuzzle(playablePuzzle);
     setBoard(playablePuzzle.map(row => [...row]));
     setStatus("");
+    setStatus("");
     setSelected(null);
     setGreenCount(0);
     setSelectedNumber(null);
     setHintUsed(false);
+    setMistakes(0);
+    setTimer(0);
+    setIsTimerRunning(true);
   };
 
   // FEATURE: Gameplay Action Handlers
@@ -221,10 +296,59 @@ function App() {
       setSelected([rowIndex, cellIndex]);
     }
   };
+
+  const handlePause = () => {
+    setIsPaused(true);
+    setIsTimerRunning(false);
+  };
+
+  const handleResume = () => {
+    setIsPaused(false);
+    setIsTimerRunning(true);
+  };
   return (
     <>
       <div style={{ textAlign: "center" }} ref={gameContainerRef}>
         <h1>Sudoku</h1>
+        <div className="game-info-bar">
+          <div className="info-item left">
+            {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+          </div>
+          <div className="info-item center">
+            Mistakes: {mistakes}/{(difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3)}
+          </div>
+          <div className="info-item right">
+            <div className="timer-container">
+              <div className="timer">{formatTime(timer)}</div>
+              <button className="btn-pause" onClick={handlePause} title="Pause Game">
+                ⏸
+              </button>
+            </div>
+            <div className="best-time">Best: {bestTimes[difficulty] ? formatTime(bestTimes[difficulty]) : '--:--'}</div>
+          </div>
+        </div>
+        {isPaused && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>Pause</h2>
+              <div className="modal-stats">
+                <div className="stat-box">
+                  <span>Time</span>
+                  <strong>{formatTime(timer)}</strong>
+                </div>
+                <div className="stat-box">
+                  <span>Mistakes</span>
+                  <strong>{mistakes}/{(difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3)}</strong>
+                </div>
+                <div className="stat-box">
+                  <span>Difficulty</span>
+                  <strong style={{ textTransform: 'capitalize' }}>{difficulty}</strong>
+                </div>
+              </div>
+              <button className="btn-resume" onClick={handleResume}>Resume Game</button>
+            </div>
+          </div>
+        )}
         <Grid
           board={board}
           puzzle={puzzle}
