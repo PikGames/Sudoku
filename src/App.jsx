@@ -40,6 +40,7 @@ function App() {
   });
   const [isPaused, setIsPaused] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [winOrigin, setWinOrigin] = useState(null);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -181,21 +182,13 @@ function App() {
           localStorage.setItem("sudoku-best-times", JSON.stringify(newBestTimes));
         }
 
-        // this will triggers a green-fill animation over the grid.
-        let count = 0;
-        const totalCells = 81;
-        const interval = setInterval(() => {
-          count++;
-          setGreenCount(count);
-          if (count === totalCells) clearInterval(interval);
-        }, 30);
+        setWinOrigin(selected || [4, 4]); // Use selected or center as fallback
       }
     } else if (status === 'Solved') {
-      // If they were in solved state but changed something (shouldn't happen with prefilled, but for robustness)
       setStatus("");
-      setGreenCount(0);
+      setWinOrigin(null);
     }
-  }, [board, solution, timer, bestTimes, difficulty, status]);
+  }, [board, solution, timer, bestTimes, difficulty, status, selected]);
 
   // Handle click outside to deselect
   const gameContainerRef = useRef(null);
@@ -232,6 +225,7 @@ function App() {
     setMistakes(0);
     setTimer(0);
     setIsTimerRunning(true);
+    setWinOrigin(null);
   };
 
   // FEATURE: Gameplay Action Handlers
@@ -375,6 +369,8 @@ function App() {
           selectedNumber={selectedNumber}
           solution={solution}
           handleCellClick={handleCellClick}
+          winOrigin={winOrigin}
+          status={status}
         />
         <Controls
           handleReset={handleReset}

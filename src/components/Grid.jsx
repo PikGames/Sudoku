@@ -11,6 +11,8 @@ function Grid({
   selectedNumber,
   solution,
   handleCellClick,
+  winOrigin,
+  status,
 }) {
   return (
     <table className="table">
@@ -47,9 +49,20 @@ function Grid({
                   selectedValue !== null &&
                   value === selectedValue &&
                   !isSelected;
+
+                // WIN ANIMATION: Ripple logic
+                const isWinRipple = status === 'Solved' && winOrigin;
+                const distance = isWinRipple ? Math.sqrt(
+                  Math.pow(rowIndex - winOrigin[0], 2) +
+                  Math.pow(cellIndex - winOrigin[1], 2)
+                ) : 0;
+
                 return (
                   <td
                     key={cellIndex}
+                    style={isWinRipple ? {
+                      animationDelay: `${distance * 80}ms`
+                    } : {}}
                     className={classNames("cell", {
                       "area-highlight": selected && isInSelectedArea && !isSelected,
                       "selected-cell": isSelected,
@@ -58,6 +71,7 @@ function Grid({
                       "conflict": isConflict,
                       "incorrect": isIncorrect && isSelected,
                       "green": cellIn < greenCount,
+                      "win-ripple": isWinRipple,
                     })}
                   >
                     <input

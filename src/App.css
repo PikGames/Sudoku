@@ -7,7 +7,7 @@
   --bg-color: #ffffff;
   --text-color: #333333;
   --bg-cell: #ffffff;
-  --border-color: #ccc;
+  --border-color: #bbbbbb;
   --btn-reset-bg: #eee;
   --btn-reset-text: #333;
 
@@ -182,8 +182,31 @@ body.dark input:read-only {
   transform: translateX(-50%);
 }
 
+@keyframes rippleGlow {
+  0% {
+    transform: scale(1);
+    background-color: var(--bg-cell);
+  }
+
+  45% {
+    transform: scale(1.1);
+    background-color: var(--primary);
+    box-shadow: 0 0 15px var(--primary);
+    z-index: 10;
+    border-radius: 4px;
+  }
+
+  100% {
+    background-color: var(--bg-cell);
+  }
+}
+
+.win-ripple {
+  animation: rippleGlow 1.2s ease-in-out;
+}
+
 .green {
-  background-color: #aef7aeb2 !important;
+  background-color: var(--area-highlight) !important;
   transition: background-color 0.3s ease;
 }
 
