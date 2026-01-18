@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from "react";
 import "./App.css";
-import { Settings, Moon, Sun } from 'lucide-react';
+import { Settings, Moon, Sun, Pause } from 'lucide-react';
 import Grid from "./components/Grid";
 import Controls from "./components/Controls";
 import { generateSudoku, createPuzzle } from "./utils/sudoku";
@@ -331,7 +331,7 @@ function App() {
             <div className="timer-container">
               <div className="timer">{formatTime(timer)}</div>
               <div className="btn-pause" onClick={handlePause} title="Pause Game">
-                ⏸
+                <Pause size={16} fill="currentColor" />
               </div>
             </div>
             <div className="best-time">Best: {bestTimes[difficulty] ? formatTime(bestTimes[difficulty]) : '--:--'}</div>
