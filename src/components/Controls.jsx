@@ -6,7 +6,10 @@ const NumberButton = ({ num, onClick, onLongPress, isActive, isFinished, isNotes
   const timerRef = useRef(null);
   const isLongPress = useRef(false);
 
-  const startPress = () => {
+  const startPress = (e) => {
+    // Only handle primary button for pointers
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
     isLongPress.current = false;
     timerRef.current = setTimeout(() => {
       isLongPress.current = true;
@@ -17,7 +20,7 @@ const NumberButton = ({ num, onClick, onLongPress, isActive, isFinished, isNotes
     }, 500); // 500ms threshold for long press
   };
 
-  const endPress = () => {
+  const endPress = (e) => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -39,14 +42,12 @@ const NumberButton = ({ num, onClick, onLongPress, isActive, isFinished, isNotes
   return (
     <button
       className={classNames("number-btn", { active: isActive, finished: isFinished, "notes-active": isNotesMode })}
-      onMouseDown={isFinished ? null : startPress}
-      onMouseUp={isFinished ? null : endPress}
-      onMouseLeave={isFinished ? null : cancelPress}
-      onTouchStart={isFinished ? null : startPress}
-      onTouchEnd={isFinished ? null : endPress}
-      onTouchCancel={isFinished ? null : cancelPress}
+      onPointerDown={isFinished ? null : startPress}
+      onPointerUp={isFinished ? null : endPress}
+      onPointerLeave={isFinished ? null : cancelPress}
+      onPointerCancel={isFinished ? null : cancelPress}
       onContextMenu={(e) => e.preventDefault()}
-      style={isFinished ? { visibility: 'hidden', pointerEvents: 'none' } : {}}
+      style={isFinished ? { visibility: 'hidden', pointerEvents: 'none' } : { touchAction: 'none' }}
     >
       {num}
     </button>

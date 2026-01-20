@@ -95,7 +95,7 @@ export const createPuzzle = (board, difficulty = 'easy') => {
 
     // Define numbers to remove based on difficulty
     const difficulties = {
-        'easy': 1,     // Easier: fewer removed
+        'easy': 30,     // Easier: fewer removed
         'medium': 40,
         'hard': 50,
         'expert': 60,
