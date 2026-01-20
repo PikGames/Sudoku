@@ -54,14 +54,14 @@ body {
 }
 
 .main-game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100dvh;
-  width: 100vw;
-  padding: 0.5rem 0 env(safe-area-inset-bottom);
-  overflow: hidden;
-  justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100dvh;
+    width: 100vw;
+    padding: 0.5rem 0 env(safe-area-inset-bottom);
+    overflow: hidden;
+    justify-content: center;
 }
 
 .container {
@@ -79,8 +79,8 @@ body {
 
 .table {
   border-collapse: collapse;
-      width: 40rem;
-    height: 40rem;
+  width: 40rem;
+  height: 40rem;
 }
 
 .cell {
@@ -235,7 +235,7 @@ body.dark input:read-only {
 
 
 .controls {
-  margin-top: auto;
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -780,8 +780,8 @@ body.dark .badge {
   }
 
   .table {
-    width: 98%;
-    max-width: 300px;
+    width: 22rem;
+    height: 22rem;
     margin: 0 auto;
   }
 
