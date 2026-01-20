@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import { Lightbulb, Eraser, RotateCcw, Puzzle } from 'lucide-react'
+import { Lightbulb, Eraser, RotateCcw, Puzzle, Pencil } from 'lucide-react'
 import React, { useRef } from 'react'
 
-const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
+const NumberButton = ({ num, onClick, onLongPress, isActive, isFinished, isNotesMode }) => {
   const timerRef = useRef(null);
   const isLongPress = useRef(false);
 
@@ -38,21 +38,22 @@ const NumberButton = ({ num, onClick, onLongPress, isActive }) => {
 
   return (
     <button
-      className={classNames("number-btn", { active: isActive })}
-      onMouseDown={startPress}
-      onMouseUp={endPress}
-      onMouseLeave={cancelPress}
-      onTouchStart={startPress}
-      onTouchEnd={endPress}
-      onTouchCancel={cancelPress}
+      className={classNames("number-btn", { active: isActive, finished: isFinished, "notes-active": isNotesMode })}
+      onMouseDown={isFinished ? null : startPress}
+      onMouseUp={isFinished ? null : endPress}
+      onMouseLeave={isFinished ? null : cancelPress}
+      onTouchStart={isFinished ? null : startPress}
+      onTouchEnd={isFinished ? null : endPress}
+      onTouchCancel={isFinished ? null : cancelPress}
       onContextMenu={(e) => e.preventDefault()}
+      style={isFinished ? { visibility: 'hidden', pointerEvents: 'none' } : {}}
     >
       {num}
     </button>
   );
 };
 
-export default function Controls({ handleReset, handleNewPuzzle, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, handleErase, handleHint, hintsUsed, difficulty }) {
+export default function Controls({ handleReset, handleNewPuzzle, handleNumberClick, handleNumberLongPress, selectedNumber, finishedNumbers, handleErase, handleHint, hintsUsed, difficulty, isNotesMode, setIsNotesMode }) {
   const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
@@ -63,6 +64,18 @@ export default function Controls({ handleReset, handleNewPuzzle, handleNumberCli
             <Eraser size={28} />
           </div>
           <span className="label">Erase</span>
+        </button>
+        <button
+          className={classNames("btn-icon-control", { "notes-btn-active": isNotesMode })}
+          onClick={() => setIsNotesMode(!isNotesMode)}
+        >
+          <div className="icon-wrapper">
+            <Pencil size={28} />
+            <div className={classNames("toggle-badge", { on: isNotesMode })}>
+              {isNotesMode ? "ON" : "OFF"}
+            </div>
+          </div>
+          <span className="label">Notes</span>
         </button>
         <button
           className="btn-icon-control"
@@ -95,15 +108,15 @@ export default function Controls({ handleReset, handleNewPuzzle, handleNumberCli
       <div className='numbers-section'>
         <div className='numbers-pad'>
           {numbers.map((num, index) => (
-            !finishedNumbers[index] && (
-              <NumberButton
-                key={num}
-                num={num}
-                isActive={selectedNumber === num}
-                onClick={handleNumberClick}
-                onLongPress={handleNumberLongPress}
-              />
-            )
+            <NumberButton
+              key={num}
+              num={num}
+              isActive={selectedNumber === num}
+              isFinished={finishedNumbers[index]}
+              isNotesMode={isNotesMode}
+              onClick={handleNumberClick}
+              onLongPress={handleNumberLongPress}
+            />
           ))}
         </div>
       </div>

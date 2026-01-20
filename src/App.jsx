@@ -41,6 +41,8 @@ function App() {
   const [isPaused, setIsPaused] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [winOrigin, setWinOrigin] = useState(null);
+  const [isNotesMode, setIsNotesMode] = useState(false);
+  const [notes, setNotes] = useState(Array(9).fill(null).map(() => Array(9).fill(null).map(() => [])));
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -78,6 +80,7 @@ function App() {
     setTimer(0);
     setIsTimerRunning(true);
     setIsPaused(false);
+    setNotes(Array(9).fill(null).map(() => Array(9).fill(null).map(() => [])));
   };
   const handleNewPuzzle = () => {
     generateNewGame();
@@ -146,6 +149,13 @@ function App() {
 
   // to handle the global Numberpad (Standard Click / Tap)
   const handleNumberClick = (num) => {
+    if (isNotesMode) {
+      if (selected && board[selected[0]][selected[1]] === null) {
+        toggleNote(selected[0], selected[1], num);
+      }
+      return;
+    }
+
     if (selectedNumber === num) {
       // Deactivate if clicking the same number that is being highlighted
       setSelectedNumber(null);
@@ -153,7 +163,25 @@ function App() {
       // Input into selected cell
       handleInput(selected[0], selected[1], num.toString());
       setSelectedNumber(null);
+
+      // Clear notes in this cell when filled
+      setNotes(prev => prev.map((row, r) =>
+        row.map((cellNotes, c) => (r === selected[0] && c === selected[1] ? [] : cellNotes))
+      ));
     }
+  };
+
+  const toggleNote = (r, c, num) => {
+    setNotes(prev => {
+      const newNotes = prev.map(row => [...row.map(n => [...n])]);
+      const currentNotes = newNotes[r][c];
+      if (currentNotes.includes(num)) {
+        newNotes[r][c] = currentNotes.filter(n => n !== num);
+      } else {
+        newNotes[r][c] = [...currentNotes, num].sort((a, b) => a - b);
+      }
+      return newNotes;
+    });
   };
 
   // to handle the global Numberpad (Long Press: Highlight occurrences)
@@ -226,12 +254,20 @@ function App() {
     setTimer(0);
     setIsTimerRunning(true);
     setWinOrigin(null);
+    setNotes(Array(9).fill(null).map(() => Array(9).fill(null).map(() => [])));
+    setIsNotesMode(false);
   };
 
   // FEATURE: Gameplay Action Handlers
   const handleErase = () => {
     if (selected && puzzle[selected[0]][selected[1]] === null) {
-      handleInput(selected[0], selected[1], "");
+      if (isNotesMode) {
+        setNotes(prev => prev.map((row, r) =>
+          row.map((cellNotes, c) => (r === selected[0] && c === selected[1] ? [] : cellNotes))
+        ));
+      } else {
+        handleInput(selected[0], selected[1], "");
+      }
     }
   };
 
@@ -286,7 +322,7 @@ function App() {
   };
   return (
     <>
-      <div style={{ textAlign: "center", position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }} ref={gameContainerRef}>
+      <div className="main-game-container" ref={gameContainerRef}>
         <div className="game-header-top">
           <h1>Sudoku</h1>
           <button className="btn-settings" onClick={() => setShowSettings(!showSettings)}>
@@ -322,7 +358,7 @@ function App() {
         </div>
         <div className="game-info-bar">
           <div className="info-item left">
-            {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+            {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
           </div>
           <div className="info-item center">
             Mistakes: {mistakes}/{(difficulty === 'easy' || difficulty === 'medium') ? 5 : (difficulty === 'devilMode' ? 1 : 3)}
@@ -371,6 +407,8 @@ function App() {
           handleCellClick={handleCellClick}
           winOrigin={winOrigin}
           status={status}
+          notes={notes}
+          isNotesMode={isNotesMode}
         />
         <Controls
           handleReset={handleReset}
@@ -383,6 +421,8 @@ function App() {
           hintsUsed={hintsUsed}
           difficulty={difficulty}
           handleErase={handleErase}
+          isNotesMode={isNotesMode}
+          setIsNotesMode={setIsNotesMode}
         />
         {status && <h2 className="status">{status}</h2>}
       </div>

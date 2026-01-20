@@ -43,20 +43,38 @@ body {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  overflow-x: hidden;
+  overflow: hidden;
   margin: 0;
-  padding-bottom: env(safe-area-inset-bottom);
+  height: 100dvh;
+  width: 100vw;
+}
+
+#root {
+  height: 100%;
+}
+
+.main-game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100dvh;
+  width: 100vw;
+  padding: 0.5rem 0 env(safe-area-inset-bottom);
+  overflow: hidden;
+  justify-content: space-between;
 }
 
 .container {
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.5rem;
   background: var(--bg-cell);
   display: flex;
   justify-content: center;
   align-items: center;
   width: fit-content;
-  margin: 0 auto;
+  margin: 0;
+  flex: 1;
+  min-height: 0;
 }
 
 .table {
@@ -67,6 +85,7 @@ body {
   border: 1px solid var(--border-color);
   padding: 0;
   background-color: var(--bg-cell);
+  position: relative;
 }
 
 .cell:nth-child(3),
@@ -213,12 +232,14 @@ body.dark input:read-only {
 
 
 .controls {
-  margin-top: 0rem;
+  margin-top: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   max-width: 600px;
+  flex-shrink: 0;
+  padding-bottom: 0.5rem;
 }
 
 .numbers-section {
@@ -250,6 +271,24 @@ body.dark input:read-only {
   flex-shrink: 0;
 }
 
+.number-btn.notes-active {
+  color: #888 !important;
+  opacity: 0.8 !important;
+}
+
+.number-btn.notes-active.active {
+  color: #555 !important;
+  transform: scale(1.1);
+}
+
+body.dark .number-btn.notes-active {
+  color: #777 !important;
+}
+
+body.dark .number-btn.notes-active.active {
+  color: #aaa !important;
+}
+
 .number-btn:hover {
   color: var(--primary);
   opacity: 1;
@@ -273,10 +312,11 @@ body.dark input:read-only {
   align-items: center;
   width: 100%;
   max-width: 600px;
-  margin: 0.5rem auto 1.5rem auto;
+  margin: 0.2rem auto 0.5rem auto;
   font-family: inherit;
   color: var(--text-color);
   font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
 .info-item {
@@ -317,8 +357,7 @@ body.dark .info-item.center {
 }
 
 h1 {
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.1rem 0;
 }
 
 /* Timer and Pause Button Layout */
@@ -439,8 +478,9 @@ body.dark .modal-overlay {
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
   width: 85%;
+  flex-shrink: 0;
 }
 
 .game-header-top h1 {
@@ -541,7 +581,7 @@ body.dark .settings-popup {
 /* Custom Hint Button */
 /* Action Buttons Container */
 .action-buttons {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -570,6 +610,10 @@ body.dark .settings-popup {
   opacity: 0.5;
   cursor: not-allowed;
   filter: grayscale(1);
+}
+
+.btn-icon-control:focus {
+  outline: none;
 }
 
 .icon-wrapper {
@@ -620,6 +664,77 @@ body.dark .settings-popup {
   border: 1px solid var(--bg-color);
 }
 
+/* Notes button styling */
+.notes-btn-active .label {
+  color: var(--primary);
+  opacity: 1;
+}
+
+.notes-btn-active .icon-wrapper svg {
+  stroke: var(--primary);
+  opacity: 1;
+}
+
+.toggle-badge {
+  position: absolute;
+  top: -4px;
+  right: -10px;
+  font-size: 0.6rem;
+  font-weight: bold;
+  padding: 1px 3px;
+  border-radius: 4px;
+  background: #eee;
+  color: #666;
+  border: 1px solid #ccc;
+  line-height: 1;
+}
+
+.toggle-badge.on {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Notes Grid inside cell */
+.notes-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 4px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.note-number {
+  font-size: 0.7rem;
+  color: #888;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1;
+  font-family: monospace;
+}
+
+body.dark .note-number {
+  color: #aaa;
+}
+
+/* Responsive adjustments for notes */
+@media (max-width: 480px) {
+  .note-number {
+    font-size: 0.55rem;
+  }
+
+  .notes-grid {
+    padding: 2px;
+  }
+}
+
 /* Standard text buttons (Reset, New Puzzle) */
 .btn-text {
   background: var(--btn-reset-bg);
@@ -653,12 +768,12 @@ body.dark .badge {
   }
 
   .container {
-    padding: 0.3rem;
+    padding: 0.1rem;
     max-width: 100vw;
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0;
   }
 
   .table {
@@ -675,20 +790,20 @@ body.dark .badge {
 
   h1 {
     font-size: 1.2rem;
-    margin-bottom: 0.3rem;
+    margin: 0.1rem 0;
   }
 
   .game-header-top {
     width: 70%;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.1rem;
   }
 
   .game-info-bar {
     font-size: 0.8rem;
-    gap: 0.3rem;
-    margin: 0.3rem auto 1rem auto;
+    gap: 0.2rem;
+    margin: 0.1rem auto 0.2rem auto;
     padding: 0 0.5rem;
-    width: 90%;
+    width: 95%;
   }
 
   .info-item.left {
@@ -713,23 +828,29 @@ body.dark .badge {
   }
 
   .action-buttons {
-    gap: 0.5rem;
-    margin-top: 0.8rem;
+    gap: 0.2rem;
+    margin-top: 0.6rem;
     justify-content: space-around;
   }
 
   .btn-icon-control {
-    min-width: 55px;
-    padding: 4px;
+    min-width: 50px;
+    padding: 2px;
   }
 
   .icon-wrapper svg {
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
   }
 
   .label {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
+  }
+
+  .toggle-badge {
+    font-size: 0.5rem;
+    right: -8px;
+    top: -2px;
   }
 
   .badge {
@@ -793,25 +914,33 @@ body.dark .badge {
   }
 
   h1 {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin: 0.2rem 0;
   }
 
   .game-info-bar {
     font-size: 0.85rem;
     width: 82%;
+    margin: 0.1rem auto 0.3rem auto;
   }
 
   .action-buttons {
-    gap: 1.5rem;
+    gap: 0.8rem;
+    justify-content: center;
   }
 
   .btn-icon-control {
-    min-width: 65px;
+    min-width: 58px;
+    padding: 4px;
   }
 
   .icon-wrapper svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+  }
+
+  .label {
+    font-size: 0.75rem;
   }
 
   .numbers-pad {

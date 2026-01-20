@@ -13,6 +13,8 @@ function Grid({
   handleCellClick,
   winOrigin,
   status,
+  notes,
+  isNotesMode,
 }) {
   return (
     <table className="table">
@@ -74,6 +76,15 @@ function Grid({
                       "win-ripple": isWinRipple,
                     })}
                   >
+                    {cell === null && notes[rowIndex][cellIndex].length > 0 && (
+                      <div className="notes-grid">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+                          <div key={n} className="note-number">
+                            {notes[rowIndex][cellIndex].includes(n) ? n : ""}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <input
                       type="text"
                       maxLength={1}
